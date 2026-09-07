@@ -5,7 +5,7 @@ import yfinance as yf
 
 # Page configuration
 st.set_page_config(
-    page_title="Zara Malik - Pro Crypto Terminal",
+    page_title="ASZ Pro Crypto Bot",
     page_icon="👑",
     layout="centered",
 )
@@ -22,7 +22,7 @@ st.markdown(
     
     /* Custom Header Styling */
     .header-title {
-        background: linear-gradient(90deg, #ff758c 0%, #ff7eb3 100%);
+        background: linear-gradient(90deg, #00cec9 0%, #6c5ce7 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         font-size: 36px;
@@ -47,7 +47,7 @@ st.markdown(
 
     /* Glowing Action Button */
     .stButton>button {
-        background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+        background: linear-gradient(135deg, #6c5ce7 0%, #00cec9 100%);
         color: white;
         font-weight: 700;
         border: none;
@@ -55,12 +55,12 @@ st.markdown(
         padding: 14px 28px;
         font-size: 18px;
         width: 100%;
-        box-shadow: 0 0 20px rgba(108, 92, 231, 0.5);
+        box-shadow: 0 0 20px rgba(0, 206, 201, 0.4);
         transition: all 0.3s ease-in-out;
     }
     .stButton>button:hover {
-        background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
-        box-shadow: 0 0 25px rgba(162, 155, 254, 0.8);
+        background: linear-gradient(135deg, #00cec9 0%, #6c5ce7 100%);
+        box-shadow: 0 0 25px rgba(0, 206, 201, 0.7);
         transform: scale(1.02);
     }
     </style>
@@ -68,14 +68,13 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# App Title with Zara Malik Branding
+# App Title with ASZ Branding
 st.markdown(
-    '<p class="header-title">👑 Zara Malik Crypto AI Bot</p>',
+    '<p class="header-title">👑 ASZ Pro Crypto Terminal</p>',
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<p class="sub-header">High-Accuracy 10-Minute Momentum & Volume Trend'
-    " Terminal</p>",
+    '<p class="sub-header">High-Accuracy Multi-Indicator Momentum & Trend Analytics</p>',
     unsafe_allow_html=True,
 )
 
@@ -114,14 +113,14 @@ assets = {
 }
 
 selected_asset_name = st.selectbox(
-    "🔥 Select Asset / Coin for Analysis:", list(assets.keys())
+    "🔥 Select Asset / Coin for High-Accuracy Analysis:", list(assets.keys())
 )
 ticker_symbol = assets[selected_asset_name]
 
 
 def fetch_data(symbol):
   try:
-    df = yf.download(symbol, period="2d", interval="5m", progress=False)
+    df = yf.download(symbol, period="5d", interval="15m", progress=False)
     if isinstance(df.columns, pd.MultiIndex):
       df.columns = df.columns.get_level_values(0)
     return df
@@ -130,8 +129,8 @@ def fetch_data(symbol):
 
 
 def analyze_market(df):
-  if df.empty or len(df) < 30:
-    return "NEUTRAL", 50.0, 0.0
+  if df.empty or len(df) < 35:
+    return "NEUTRAL", 50.0, 0.0, 0.0
 
   close = df["Close"].squeeze()
   volume = (
@@ -147,31 +146,34 @@ def analyze_market(df):
 
   current_price = float(close.iloc[-1])
 
-  # Volume Analysis
-  avg_volume = volume.rolling(window=10).mean().iloc[-1]
+  # 1. Advanced Volume Spike Filter
+  avg_volume = volume.rolling(window=20).mean().iloc[-1]
   current_volume = volume.iloc[-1]
-  vol_spike = current_volume > (avg_volume * 1.15)
+  vol_spike = current_volume > (avg_volume * 1.25)
 
   v_buy, v_sell = 0, 0
   if vol_spike and close.iloc[-1] > close.iloc[-2]:
-    v_buy += 4
+    v_buy += 5
   elif vol_spike:
-    v_sell += 4
+    v_sell += 5
 
-  # EMA Trend (9 & 21)
+  # 2. Multi-EMA Trend Crossover (9, 21, 50)
   ema_9 = close.ewm(span=9, adjust=False).mean().iloc[-1]
   ema_21 = close.ewm(span=21, adjust=False).mean().iloc[-1]
+  ema_50 = close.ewm(span=50, adjust=False).mean().iloc[-1]
+  
   ema_buy, ema_sell = 0, 0
-  if current_price > ema_9:
-    ema_buy += 3
+  if current_price > ema_9 > ema_21:
+    ema_buy += 6
+  elif current_price < ema_9 < ema_21:
+    ema_sell += 6
+    
+  if ema_9 > ema_50:
+    ema_buy += 4
   else:
-    ema_sell += 3
-  if ema_9 > ema_21:
-    ema_buy += 3
-  else:
-    ema_sell += 3
+    ema_sell += 4
 
-  # RSI Calculation
+  # 3. Enhanced RSI (14-period)
   delta = close.diff()
   gain = delta.clip(lower=0).rolling(window=14).mean()
   loss = (-delta.clip(upper=0)).rolling(window=14).mean()
@@ -186,21 +188,21 @@ def analyze_market(df):
     rsi = 100 - (100 / (1 + (curr_gain / curr_loss)))
 
   rsi_buy, rsi_sell = 0, 0
-  if rsi < 35:
-    rsi_buy += 5
-  elif rsi > 65:
-    rsi_sell += 5
-  elif rsi < 50:
-    rsi_buy += 2
-  else:
-    rsi_sell += 2
+  if 40 <= rsi <= 55 and close.iloc[-1] > close.iloc[-2]:
+    rsi_buy += 5  # Bullish continuation zone
+  elif 55 < rsi < 70:
+    rsi_buy += 3
+  elif rsi < 30:
+    rsi_buy += 6  # Oversold bounce
+  elif rsi > 70:
+    rsi_sell += 6  # Overbought pullback
 
-  # MACD Momentum
+  # 4. MACD Momentum
   exp1 = close.ewm(span=12, adjust=False).mean()
   exp2 = close.ewm(span=26, adjust=False).mean()
   macd = exp1 - exp2
   sig = macd.ewm(span=9, adjust=False).mean()
-  macd_buy, macd_sell = (4, 0) if macd.iloc[-1] > sig.iloc[-1] else (0, 4)
+  macd_buy, macd_sell = (5, 0) if macd.iloc[-1] > sig.iloc[-1] else (0, 5)
 
   total_buy = v_buy + ema_buy + rsi_buy + macd_buy
   total_sell = v_sell + ema_sell + rsi_sell + macd_sell
@@ -209,13 +211,13 @@ def analyze_market(df):
   buy_pct = (total_buy / score_sum * 100) if score_sum > 0 else 50.0
   sell_pct = 100.0 - buy_pct
 
-  if buy_pct >= 65:
+  if buy_pct >= 68:
     summary = "STRONG BUY 🚀"
-  elif buy_pct >= 54:
+  elif buy_pct >= 56:
     summary = "BUY 📈"
-  elif sell_pct >= 65:
+  elif sell_pct >= 68:
     summary = "STRONG SELL 🔻"
-  elif sell_pct >= 54:
+  elif sell_pct >= 56:
     summary = "SELL 📉"
   else:
     summary = "NEUTRAL ⚡"
@@ -224,8 +226,8 @@ def analyze_market(df):
 
 
 # Button UI
-if st.button("✨ Run AI Signal Scanner", use_container_width=True):
-  with st.spinner("Zara Malik AI Engine is scanning live indicators..."):
+if st.button("✨ Run ASZ High-Accuracy AI Scanner", use_container_width=True):
+  with st.spinner("ASZ AI Engine is analyzing multi-timeframe indicators..."):
     df = fetch_data(ticker_symbol)
     if not df.empty and "Close" in df.columns:
       summary, buy_pct, sell_pct, price = analyze_market(df)
@@ -233,7 +235,7 @@ if st.button("✨ Run AI Signal Scanner", use_container_width=True):
       st.markdown("---")
       st.markdown(f"### 📊 Live Report: **{selected_asset_name}**")
       st.metric(
-          label="Current Price",
+          label="Current Market Price",
           value=f"${price:,.4f}" if price < 10 else f"${price:,.2f}",
       )
 
@@ -247,21 +249,20 @@ if st.button("✨ Run AI Signal Scanner", use_container_width=True):
 
       col1, col2 = st.columns(2)
       with col1:
-        st.metric(label="🟢 Buy Chance (10m)", value=f"{buy_pct:.1f}%")
+        st.metric(label="🟢 High-Accuracy Buy Score", value=f"{buy_pct:.1f}%")
       with col2:
-        st.metric(label="🔴 Sell Chance (10m)", value=f"{sell_pct:.1f}%")
+        st.metric(label="🔴 High-Accuracy Sell Score", value=f"{sell_pct:.1f}%")
 
       st.progress(
           int(buy_pct),
-          text=f"Market Probability -> Buy: {buy_pct:.1f}% | Sell: {sell_pct:.1f}%",
+          text=f"ASZ AI Probability -> Buy: {buy_pct:.1f}% | Sell: {sell_pct:.1f}%",
       )
 
       st.markdown("---")
       st.info(
-          "💡 **Designed for:** Zara Malik Trading Hub | Short-Term Momentum"
-          " Analytics."
+          "💡 **Powered by:** ASZ Pro Crypto Bot | Advanced Momentum & Volume Filtering."
       )
     else:
       st.error(
-          "⚠️ Data fetch failed for this asset. Please try another coin."
+          "⚠️ Data fetch failed for this asset. Please check network or try another coin."
       )
