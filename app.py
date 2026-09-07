@@ -74,11 +74,11 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    '<p class="sub-header">High-Accuracy Multi-Indicator Momentum & Trend Analytics</p>',
+    '<p class="sub-header">High-Accuracy Multi-Indicator Momentum & Trend Analytics (50+ Assets)</p>',
     unsafe_allow_html=True,
 )
 
-# 30+ Famous Coins & Commodities Dictionary
+# 50 Famous Coins & Commodities Dictionary
 assets = {
     "Bitcoin (BTC/USD)": "BTC-USD",
     "Ethereum (ETH/USD)": "ETH-USD",
@@ -105,15 +105,35 @@ assets = {
     "Injective (INJ/USD)": "INJ-USD",
     "Sui (SUI/USD)": "SUI-USD",
     "Pepe (PEPE/USD)": "PEPE-USD",
-    "Gold (GC=F)": "GC=F",
-    "Silver (SI=F)": "SI=F",
     "Ethereum Classic (ETC/USD)": "ETC-USD",
     "Filecoin (FIL/USD)": "FIL-USD",
     "Tron (TRX/USD)": "TRX-USD",
+    "Hedera (HBAR/USD)": "HBAR-USD",
+    "Near Protocol (NEAR/USD)": "NEAR-USD",
+    "Internet Computer (ICP/USD)": "ICP-USD",
+    "Immutable (IMX/USD)": "IMX-USD",
+    "VeChain (VET/USD)": "VET-USD",
+    "Maker (MKR/USD)": "MKR-USD",
+    "Theta Network (THETA/USD)": "THETA-USD",
+    "Algorand (ALGO/USD)": "ALGO-USD",
+    "Fantom (FTM/USD)": "FTM-USD",
+    "The Sandbox (SAND/USD)": "SAND-USD",
+    "Decentraland (MANA/USD)": "MANA-USD",
+    "Axie Infinity (AXS/USD)": "AXS-USD",
+    "Chiliz (CHZ/USD)": "CHZ-USD",
+    "Flow (FLOW/USD)": "FLOW-USD",
+    "KASPA (KAS/USD)": "KAS-USD",
+    "Bonk (BONK/USD)": "BONK-USD",
+    "Floki (FLOKI/USD)": "FLOKI-USD",
+    "Beam (BEAM/USD)": "BEAM-USD",
+    "Celestia (TIA/USD)": "TIA-USD",
+    "Pendle (PENDLE/USD)": "PENDLE-USD",
+    "Gold (GC=F)": "GC=F",
+    "Silver (SI=F)": "SI=F",
 }
 
 selected_asset_name = st.selectbox(
-    "🔥 Select Asset / Coin for High-Accuracy Analysis:", list(assets.keys())
+    "🔥 Select Asset / Coin for High-Accuracy Analysis (50+ Available):", list(assets.keys())
 )
 ticker_symbol = assets[selected_asset_name]
 
@@ -253,14 +273,14 @@ if st.button("✨ Run ASZ High-Accuracy AI Scanner", use_container_width=True):
       with col2:
         st.metric(label="🔴 High-Accuracy Sell Score", value=f"{sell_pct:.1f}%")
 
-      st.progress(
+ionali = st.progress(
           int(buy_pct),
           text=f"ASZ AI Probability -> Buy: {buy_pct:.1f}% | Sell: {sell_pct:.1f}%",
       )
 
       st.markdown("---")
       st.info(
-          "💡 **Powered by:** ASZ Pro Crypto Bot | Advanced Momentum & Volume Filtering."
+          "💡 **Powered by:** ASZ Pro Crypto Bot | 50+ Coins Advanced Momentum Filtering."
       )
     else:
       st.error(
