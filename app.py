@@ -109,7 +109,6 @@ assets = {
     "Filecoin (FIL/USD)": "FIL-USD",
     "Tron (TRX/USD)": "TRX-USD",
     "Hedera (HBAR/USD)": "HBAR-USD",
-    "Near Protocol (NEAR/USD)": "NEAR-USD",
     "Internet Computer (ICP/USD)": "ICP-USD",
     "Immutable (IMX/USD)": "IMX-USD",
     "VeChain (VET/USD)": "VET-USD",
@@ -273,7 +272,7 @@ if st.button("✨ Run ASZ High-Accuracy AI Scanner", use_container_width=True):
       with col2:
         st.metric(label="🔴 High-Accuracy Sell Score", value=f"{sell_pct:.1f}%")
 
-ionali = st.progress(
+      st.progress(
           int(buy_pct),
           text=f"ASZ AI Probability -> Buy: {buy_pct:.1f}% | Sell: {sell_pct:.1f}%",
       )
